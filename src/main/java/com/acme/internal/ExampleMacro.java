@@ -22,6 +22,7 @@ import org.xwiki.bridge.DocumentModelBridge;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.display.internal.DocumentDisplayerParameters;
 import org.xwiki.model.reference.EntityReference;
+import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.block.Block;
 import org.xwiki.rendering.block.WordBlock;
@@ -30,7 +31,6 @@ import org.xwiki.rendering.macro.AbstractMacro;
 import org.xwiki.rendering.macro.MacroExecutionException;
 import com.acme.ExampleMacroParameters;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
-import org.xwiki.model.reference.EntityReferenceResolver;
 
 /**
  * Example Macro.
@@ -52,9 +52,6 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
     @Inject
     private DocumentModelBridge documentModelBridge;
 
-    @Inject
-    private EntityReferenceResolver<EntityReference> resolver;
-
 
     public ExampleMacro()
     {
@@ -65,18 +62,13 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
 public List<Block> execute(ExampleMacroParameters parameters, String content, MacroTransformationContext context)
     throws MacroExecutionException
 {
-    EntityReference includedReference = resolve(parameters.getdocRef());
+    String documentReference = parameters.getparameters().getDocumentReference();
+    DocumentReference docRef = new DocumentReference(context.getWikiReference(), documentReference);
+    XWikiDocument doc = context.getWiki().getDocument(docRef, context);
+    String docContent = doc.getContent();
 
-    String documentContent;
-    try {
-        documentContent = this.documentModelBridge.getContent(includedReference);
-    } catch (Exception e) {
-        throw new MacroExecutionException(
-            "Failed to load Document",
-            e);
-    }
     ArrayList<String> contentList = new ArrayList<String>();
-    contentList.add(documentContent);
+    contentList.add(docContent);
     ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
     pipeList.add(new CharSequenceLowercase());
     pipeList.add(new CharSequence2TokenSequence());
