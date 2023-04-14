@@ -16,6 +16,12 @@
     <xwiki.surefire.captureconsole.skip>true</xwiki.surefire.captureconsole.skip>
   </properties>
   <repositories>
+
+  <repository>
+    <id>central</id>
+    <url>https://repo.maven.apache.org/maven2/</url>
+  </repository>
+
   <repository>
     <id>xwiki-public-releases</id>
     <url>https://maven.xwiki.org/releases</url>
@@ -29,40 +35,33 @@
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-context</artifactId>
-      <version>15.2</version>
+      <version>15.3</version>
     </dependency>
+    <dependency>
+    <groupId>org.xwiki.rendering</groupId>
+    <artifactId>xwiki-rendering-api</artifactId>
+    <version>15.3</version>
+</dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-bridge</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-model-api</artifactId>
       <version>${project.version}</version>
+    </dependency> -->
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model-api</artifactId>
+      <version>15.3</version>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-display-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <dependency>
-    <groupId>org.xwiki.commons</groupId>
-    <artifactId>xwiki-commons-model</artifactId>
-    <version>${project.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.xwiki.rendering</groupId>
-    <artifactId>xwiki-rendering-api</artifactId>
-    <version>${project.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.xwiki.rendering</groupId>
-    <artifactId>xwiki-rendering-syntax-wiki</artifactId>
-    <version>${project.version}</version>
-  </dependency>
-
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-rendering-macro-context</artifactId>

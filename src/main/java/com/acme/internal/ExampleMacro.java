@@ -22,7 +22,9 @@ import org.xwiki.bridge.DocumentModelBridge;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.display.internal.DocumentDisplayerParameters;
 import org.xwiki.model.reference.EntityReference;
+import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.WikiReference;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.block.Block;
 import org.xwiki.rendering.block.WordBlock;
@@ -48,10 +50,26 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
     /**
      * Create and initialize the descriptor of the macro.
      */
+     @Inject
+    private DocumentReferenceResolver<String> resolver;
+
+    @Inject
+    private EntityReferenceSerializer<String> serializer;
+
+    @Inject
+    private DocumentAccessBridge documentAccessBridge;
+
+    @Inject
+    private RenderingContext renderingContext;
 
     @Inject
     private DocumentModelBridge documentModelBridge;
 
+    @Inject
+    private Wiki wiki;
+
+    @Inject
+    private WikiReference wikiReference;
 
     public ExampleMacro()
     {
@@ -62,9 +80,12 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
 public List<Block> execute(ExampleMacroParameters parameters, String content, MacroTransformationContext context)
     throws MacroExecutionException
 {
+    Wiki wiki = context.getWiki();
+    WikiReference wikiRef = context.getWikiReference();
+    
     String documentReference = parameters.getparameters().getDocumentReference();
-    DocumentReference docRef = new DocumentReference(context.getWikiReference(), documentReference);
-    XWikiDocument doc = context.getWiki().getDocument(docRef, context);
+    DocumentReference docRef = new DocumentReference(wikiRef, documentReference);
+    XWikiDocument doc = wiki.getDocument(docRef, context);
     String docContent = doc.getContent();
 
     ArrayList<String> contentList = new ArrayList<String>();

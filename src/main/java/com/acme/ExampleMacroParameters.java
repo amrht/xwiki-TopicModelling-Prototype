@@ -28,16 +28,16 @@ import org.xwiki.properties.annotation.PropertyDescription;
 public class ExampleMacroParameters
 {
     /**
-     * @see {@link #getdocRef()}
+     * @see {@link #getparameters()}
      */
-    private String docRef;
+    private String parameters;
 
     /**
      * @return the example parameter
      */
-    public String getdocRef()
+    public String getparameters()
     {
-        return this.docRef;
+        return this.parameters;
     }
     
     /**
@@ -45,8 +45,8 @@ public class ExampleMacroParameters
      */
     @PropertyMandatory
     @PropertyDescription("Example parameter")
-    public void setParameter(String docRef)
+    public void setParameter(String parameters)
     {
-        this.docRef = docRef;
+        this.parameters = parameters;
     }
 }
