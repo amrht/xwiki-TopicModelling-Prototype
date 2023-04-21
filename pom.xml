@@ -35,27 +35,41 @@
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-context</artifactId>
-      <version>15.3</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
     <groupId>org.xwiki.rendering</groupId>
     <artifactId>xwiki-rendering-api</artifactId>
-    <version>15.3</version>
+    <version>${project.version}</version>
 </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-bridge</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-model-api</artifactId>
-      <version>${project.version}</version>
-    </dependency> -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-model-api</artifactId>
-      <version>15.3</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+    <groupId>org.xwiki.platform</groupId>
+    <artifactId>xwiki-platform-wiki-api</artifactId>
+    <version>${project.version}</version>
+</dependency>
+
+
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>

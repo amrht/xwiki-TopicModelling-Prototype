@@ -8,6 +8,7 @@ import cc.mallet.pipe.iterator.*;
 import cc.mallet.topics.*;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Instance;
+import cc.mallet.topics.ParallelTopicModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +17,11 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import javax.inject.*;
+import java.util.Collections;
 
 
 import org.xwiki.bridge.DocumentModelBridge;
+import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.display.internal.DocumentDisplayerParameters;
 import org.xwiki.model.reference.EntityReference;
@@ -33,6 +36,7 @@ import org.xwiki.rendering.macro.AbstractMacro;
 import org.xwiki.rendering.macro.MacroExecutionException;
 import com.acme.ExampleMacroParameters;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
+import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
 
 /**
  * Example Macro.
@@ -50,26 +54,14 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
     /**
      * Create and initialize the descriptor of the macro.
      */
-     @Inject
-    private DocumentReferenceResolver<String> resolver;
 
-    @Inject
-    private EntityReferenceSerializer<String> serializer;
 
-    @Inject
+   @Inject
     private DocumentAccessBridge documentAccessBridge;
 
     @Inject
-    private RenderingContext renderingContext;
+    private DocumentModelBridge documentModelBridge; 
 
-    @Inject
-    private DocumentModelBridge documentModelBridge;
-
-    @Inject
-    private Wiki wiki;
-
-    @Inject
-    private WikiReference wikiReference;
 
     public ExampleMacro()
     {
@@ -80,14 +72,23 @@ public class ExampleMacro extends AbstractMacro<ExampleMacroParameters>
 public List<Block> execute(ExampleMacroParameters parameters, String content, MacroTransformationContext context)
     throws MacroExecutionException
 {
-    Wiki wiki = context.getWiki();
-    WikiReference wikiRef = context.getWikiReference();
-    
-    String documentReference = parameters.getparameters().getDocumentReference();
-    DocumentReference docRef = new DocumentReference(wikiRef, documentReference);
-    XWikiDocument doc = wiki.getDocument(docRef, context);
-    String docContent = doc.getContent();
 
+
+    DocumentReference documentReference = parameters.getparameters();
+    // DocumentReference docRef = resolver.resolve(parameters.getparameters().getDocumentReference(), documentReference, EntityType.DOCUMENT);
+    
+    
+
+    DocumentModelBridge documentBridge;
+        try {
+            documentBridge = this.documentAccessBridge.getDocument(documentReference);
+        } catch (Exception e) {
+            throw new MacroExecutionException(
+                "Failed to load Document",
+                e);
+        }
+
+    String docContent = documentBridge.getContent();
     ArrayList<String> contentList = new ArrayList<String>();
     contentList.add(docContent);
     ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
@@ -116,40 +117,26 @@ public List<Block> execute(ExampleMacroParameters parameters, String content, Ma
     model.setNumIterations(numIterations);
     model.estimate();
 
-    List<Block> result = new ArrayList<Block>();
-
-    // Create a new paragraph block to contain the results
-    ParagraphBlock paragraph = new ParagraphBlock();
-
-    // Add a word block containing the number of topics
-    WordBlock numTopicsBlock = new WordBlock("Number of topics: " + model.getNumTopics());
-    paragraph.add(numTopicsBlock);
-
-    // Add a word block containing the number of iterations
-    WordBlock numIterationsBlock = new WordBlock("Number of iterations: " + model.getNumIterations());
-    paragraph.add(numIterationsBlock);
-
-    // Add a word block containing the number of threads
-    WordBlock numThreadsBlock = new WordBlock("Number of threads: " + model.getNumThreads());
-    paragraph.add(numThreadsBlock);
-
-    // Add a word block containing the top words for each topic
-    for (int topic = 0; topic < model.getNumTopics(); topic++) {
-        WordBlock topicBlock = new WordBlock("Topic " + topic + ": ");
-        paragraph.add(topicBlock);
-        int[] topicWords = model.getSortedWordsPerTopic(topic);
-        for (int i = 0; i < 5; i++) {
-            if (i > 0) {
-                topicBlock.add(new WordBlock(", "));
-            }
-            topicBlock.add(new WordBlock(instances.getDataAlphabet().lookupObject(topicWords[i]).toString()));
-        }
+   String[][] topWords = (String[][]) model.getTopWords(10);
+StringBuilder sb = new StringBuilder();
+for (int topic = 0; topic < model.getNumTopics(); topic++) {
+    sb.append("Topic " + topic + ":\n");
+    for (int rank = 0; rank < 10; rank++) {
+        sb.append("  " + (rank + 1) + ". " + topWords[topic][rank] + "\n");
     }
+    sb.append("\n");
+}
 
-    // Add the paragraph block to the result
-    result.add(paragraph);
+// Create a new paragraph block to contain the results
+ParagraphBlock paragraph = new ParagraphBlock(Collections.singletonList(new WordBlock(sb.toString())), Collections.emptyMap());
 
-    return result;
+
+// Add the paragraph block to the result
+List<Block> blocks = new ArrayList<Block>();
+blocks.add(paragraph);
+
+
+    return blocks;
 }
 
 @Override
