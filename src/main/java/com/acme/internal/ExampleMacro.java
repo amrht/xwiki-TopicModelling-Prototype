@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import javax.inject.*;
 import java.util.Collections;
-
+import java.util.HashMap;
 
 import org.xwiki.bridge.DocumentModelBridge;
 import org.xwiki.bridge.DocumentAccessBridge;
@@ -112,10 +112,17 @@ public List<Block> execute(ExampleMacroParameters parameters, String content, Ma
 
     // Create the LDA topic model
     ParallelTopicModel model = new ParallelTopicModel(numTopics);
+
     model.addInstances(instances);
+
     model.setNumThreads(numThreads);
     model.setNumIterations(numIterations);
-    model.estimate();
+    try {
+        model.estimate();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    
 
    String[][] topWords = (String[][]) model.getTopWords(10);
 StringBuilder sb = new StringBuilder();
@@ -127,16 +134,18 @@ for (int topic = 0; topic < model.getNumTopics(); topic++) {
     sb.append("\n");
 }
 
-// Create a new paragraph block to contain the results
-ParagraphBlock paragraph = new ParagraphBlock(Collections.singletonList(new WordBlock(sb.toString())), Collections.emptyMap());
-
+// Create a new ParagraphBlock with the content of the StringBuilder
+ParagraphBlock paragraph = new ParagraphBlock(
+    Collections.singletonList((Block) new WordBlock(sb.toString())),
+    new HashMap<String, String>()
+);
 
 // Add the paragraph block to the result
 List<Block> blocks = new ArrayList<Block>();
 blocks.add(paragraph);
 
+return blocks;
 
-    return blocks;
 }
 
 @Override

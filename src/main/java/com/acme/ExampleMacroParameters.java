@@ -21,6 +21,7 @@ package com.acme;
 
 import org.xwiki.properties.annotation.PropertyMandatory;
 import org.xwiki.properties.annotation.PropertyDescription;
+import org.xwiki.model.reference.DocumentReference;
 
 /**
  * docRef for the {@link com.acme.internal.ExampleMacro} Macro.
@@ -30,12 +31,12 @@ public class ExampleMacroParameters
     /**
      * @see {@link #getparameters()}
      */
-    private String parameters;
+    private DocumentReference parameters;
 
     /**
      * @return the example parameter
      */
-    public String getparameters()
+    public DocumentReference getparameters()
     {
         return this.parameters;
     }
@@ -45,7 +46,7 @@ public class ExampleMacroParameters
      */
     @PropertyMandatory
     @PropertyDescription("Example parameter")
-    public void setParameter(String parameters)
+    public void setParameter(DocumentReference parameters)
     {
         this.parameters = parameters;
     }
