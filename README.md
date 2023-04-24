@@ -7,3 +7,5 @@ This macro takes the page name as refrence to the document and fetch the content
 Then, the content will get loaded into the Model for analysis and some topics will be given as output after Analysis.
 
 This still have some Errors, and i have made another branch named Delayed so that i can push the further updates without disturbing the work done before Deadline.
+
+Right now, The Build is Successful but i have not deployed it yet, I have added the image and Code in delayed Branch that showed the successful build.
